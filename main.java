@@ -5,7 +5,9 @@ class Scratch {
     public static void main(String[] args) {
         Card card1 = new Card("Card 1");
         Card card2 = new Card("Card 2");
+
         Terminal.initialFillPrizes();
+
         int choice = 1;
 
         while (choice >= 1) {
@@ -21,9 +23,9 @@ class Scratch {
                     break;
                 case 3: //transfer credits
                     Scanner input = new Scanner(System.in);
-                    System.out.println("Choose FROM which card you want to move: ");
+                    System.out.println("Choose FROM which card you want to move [1 or 2]: ");
                     int fromc = input.nextInt();
-                    System.out.println("Choose TO which card you want to move: ");
+                    System.out.println("Choose TO which card you want to move [1 or 2]: ");
                     int toc = input.nextInt();
                     if (fromc == 1){
                         Terminal.moveCredits(card1, card2);
@@ -34,9 +36,9 @@ class Scratch {
                     break;
                 case 4: //transfer tickets
                     Scanner transfer = new Scanner(System.in);
-                    System.out.println("Choose FROM which card you want to move: ");
+                    System.out.println("Choose FROM which card you want to move [1 or 2]: ");
                     int fromcrd = transfer.nextInt();
-                    System.out.println("Choose TO which card you want to move: ");
+                    System.out.println("Choose TO which card you want to move [1 or 2]: ");
                     int tocrd = transfer.nextInt();
                     if (fromcrd == 1){
                         Terminal.moveTickets(card1, card2);
@@ -58,7 +60,7 @@ class Scratch {
                     break;
                 case 6: //buy prizes
                     Scanner inp = new Scanner(System.in);
-                    System.out.println("Which card do you want to use for playing?: ");
+                    System.out.println("Which card do you want to use for payment?: ");
                     int select = inp.nextInt();
                     if (select == 1){
                         Terminal.exchangeTickets(card1);
@@ -80,7 +82,8 @@ class Scratch {
         System.out.println("-------------------------\n");
         System.out.println("1 - Add credit to cards");
         System.out.println("2 - Show cards info");
-        System.out.println("3 - Transfer credit between cards");
+        System.out.println("3 - Transfer credit");
+        System.out.println("4 - Transfer tickets");
         System.out.println("5 - Play a game");
         System.out.println("6 - Buy prizes");
         System.out.println("0 - Quit");
@@ -170,58 +173,55 @@ class Prize {
         this.setPrice(price);
         this.setQuantity(quantity);
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public void setName(String nam) {
         this.name = nam;
     }
-    
+
     public int getPrice() {
         return this.price;
     }
-    
+
     public void setPrice(int price) {
         if (price < 0){
             throw new IllegalArgumentException("Price cannot be negative");
         }
         this.price = price;
     }
-    
+
     public int getQuantity() {
         return this.quantity;
     }
-    
+
     public void setQuantity(int quantity) {
         if (quantity < 0){
             throw new IllegalArgumentException("Quantity cannot be negative");
         }
         this.quantity = quantity;
     }
-    
-    @Override
-    public String toString() {
-        return "Name: " + this.name + 
-            " Tickets required: " + this.price + 
-            " Quantity: " + this.quantity;
-    }
 }
 
 class Terminal {
-    private static List<Prize> prizes = new ArrayList<>(); 
-    
+    private static List<Prize> prizes = new ArrayList<>();
+
     public static void initialFillPrizes() {
         prizes.clear();
-        Prize p1 = new Prize("Candy", 3, 5);
-        Prize p2 = new Prize("Wllet", 2, 5);
+        Prize p1 = new Prize("Candy", 3, 2);
+        Prize p2 = new Prize("Wallet", 2, 3);
         Prize p3 = new Prize("Flashlight", 4, 5);
+        Prize p4 = new Prize("Bear", 10, 2);
+        Prize p5 = new Prize("Doll", 7, 4)
         prizes.add(p1);
         prizes.add(p2);
         prizes.add(p3);
+        prizes.add(p4);
+        prizes.add(p5);
     }
-    
+
     public static void getCardInfo(Card card) {
         System.out.println("Card ID: " + card.getId());
         System.out.println("Card Name: " + card.getName());
@@ -238,7 +238,7 @@ class Terminal {
             throw new IllegalArgumentException("Money cannot be negative");
         }
         card.setCredits(card.getCredits() + amount * 2.0);
-        System.out.printf(card.getName() + " Credits: %f\n", card.getCredits());
+        System.out.printf(card.getName() + " Credits: %.2f\n", card.getCredits());
     }
 
     public static void moveCredits(Card fromcard, Card tocard){
@@ -252,18 +252,18 @@ class Terminal {
         System.out.printf("Card Tickets: %d\n", tocard.getTickets());
         fromcard.setTickets(0);
     }
-    
+
     public static void exchangeTickets(Card card) {
         int len = prizes.size();
         System.out.println("Prizes remaining: ");
         for (int i = 0; i < len; i++) {
             Prize p = prizes.get(i);
-            System.out.println(p.toString());
+            System.out.println(p.getName() + " -> Cost: " + p.getPrice() + ", Available pcs: " + p.getQuantity());
         }
         System.out.println("Enter name to buy: ");
         Scanner input = new Scanner(System.in);
         String name = input.nextLine();
-        
+
         boolean isFound = false;
         for (int i = 0; i < len; i++) {
             Prize p = prizes.get(i);
@@ -276,16 +276,16 @@ class Terminal {
                 else {
                     System.out.println("Insufficient amount of tickets");
                 }
-                
+
                 isFound = true;
                 break;
             }
         }
-        
+
         if (!isFound) {
             System.out.println("Selected prize is not found");
         }
-        
+
     }
 }
 
