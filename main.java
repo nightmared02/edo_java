@@ -56,7 +56,7 @@ class Scratch {
                         Game.playGame(card2);
                     }
                     break;
-                case 6: // Buy prize
+                case 6: //buy prizes
                     Scanner inp = new Scanner(System.in);
                     System.out.println("Which card do you want to use for playing?: ");
                     int select = inp.nextInt();
@@ -81,7 +81,8 @@ class Scratch {
         System.out.println("1 - Add credit to cards");
         System.out.println("2 - Show cards info");
         System.out.println("3 - Transfer credit between cards");
-        System.out.println("4 - Play a game");
+        System.out.println("5 - Play a game");
+        System.out.println("6 - Buy prizes");
         System.out.println("0 - Quit");
         selection = input.nextInt();
         return selection;
@@ -213,9 +214,9 @@ class Terminal {
     
     public static void initialFillPrizes() {
         prizes.clear();
-        Prize p1 = new Prize("candy", 1, 5);
-        Prize p2 = new Prize("wallet", 1, 5);
-        Prize p3 = new Prize("flashlight", 1, 5);
+        Prize p1 = new Prize("Candy", 3, 5);
+        Prize p2 = new Prize("Wllet", 2, 5);
+        Prize p3 = new Prize("Flashlight", 4, 5);
         prizes.add(p1);
         prizes.add(p2);
         prizes.add(p3);
@@ -273,7 +274,7 @@ class Terminal {
                     p.setQuantity(p.getQuantity() - 1);
                 }
                 else {
-                    System.out.println("insufficient amount of tickets");
+                    System.out.println("Insufficient amount of tickets");
                 }
                 
                 isFound = true;
