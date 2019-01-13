@@ -84,54 +84,54 @@ class Card {
 
     //Class constructor
     Card(String nam){
-        idnumber = RandomString.generate(10);
-        credits = 0;
-        tickets = 0;
-        name = nam;
+        this.idnumber = RandomString.generate(10);
+        this.credits = 0;
+        this.tickets = 0;
+        this.name = nam;
     }
 
-    public String getId(Card card) {
-        return card.idnumber;
+    public String getId() {
+        return this.idnumber;
     }
 
     public void setId(String id) {
         if (id.length() < 10){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("id should be atleast 10 symbols");
         }
-        idnumber = id;
+        this.idnumber = id;
     }
 
-    public String getName(Card card) {
-        return card.name;
+    public String getName() {
+        return this.name;
     }
 
     public void setName(String nm) {
         if (nm.length() < 3){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Name should be atleast 3 symbols long");
         }
-        name = nm;
+        this.name = nm;
     }
 
-    public  double getCredits(Card card) {
-        return card.credits;
+    public double getCredits() {
+        return this.credits;
     }
 
-    public void setCredits(Card card, double credit) {
+    public void setCredits(double credit) {
         if (credit < 0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Credits cannot be negative");
         }
-        card.credits = credit;
+        this.credits = credit;
     }
 
-    public int getTickets(Card card) {
-        return card.tickets;
+    public int getTickets() {
+        return this.tickets;
     }
 
-    public void setTickets(Card card, int ticket) {
+    public void setTickets(int ticket) {
         if (ticket < 0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Tickets cannot be negative");
         }
-        card.tickets = ticket;
+        this.tickets = ticket;
     }
 }
 
@@ -139,11 +139,11 @@ class Game {
     public static void playGame(Card card){
         Random rand = new Random();
         int gameresult = rand.nextInt(10) + 1;
-        card.setCredits(card, card.getCredits(card) - 5);
+        card.setCredits(card.getCredits() - 5);
         System.out.printf("\n%d Card credits payed for game.\n", 5);
-        card.setTickets(card,card.getTickets(card) + gameresult);
+        card.setTickets(card.getTickets() + gameresult);
         System.out.printf("%d tickets won from the game!\n", gameresult);
-        System.out.printf("Card Tickets: %d\n\n", card.getTickets(card));
+        System.out.printf("Card Tickets: %d\n\n", card.getTickets());
     }
 }
 
@@ -152,35 +152,79 @@ class Prize {
     private int price;
     private int quantity;
 
+    public Prize(String name, int price, int quantity) {
+        this.setName(name);
+        this.setPrice(price);
+        this.setQuantity(quantity);
+    }
+    
+    public String getName() {
+        return this.name;
+    }
+    
+    public void setName(String nam) {
+        this.name = nam;
+    }
+    
+    public int getPrice() {
+        return this.price;
+    }
+    
+    public void setPrice(int price) {
+        if (price < 0){
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+        this.price = price;
+    }
+    
+    public int getQuantity() {
+        return this.quantity;
+    }
+    
+    public void setQuantity(int quantity) {
+        if (quantity < 0){
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+        this.quantity = quantity;
+    }
 }
 
 class Terminal {
+    private List<Prize> prizes; // TODO: use it
+    
+    public Terminal() {
+        this.prizes = new ArrayList<>();
+    }
+    
     public static void getCardInfo(Card card) {
-        System.out.println("Card ID: " + card.getId(card));
-        System.out.println("Card Name: " + card.getName(card));
-        System.out.printf("Card Credits: %.2f\n", card.getCredits(card));
-        System.out.printf("Card Tickets: %d\n", card.getTickets(card));
+        System.out.println("Card ID: " + card.getId());
+        System.out.println("Card Name: " + card.getName());
+        System.out.printf("Card Credits: %.2f\n", card.getCredits());
+        System.out.printf("Card Tickets: %d\n", card.getTickets());
         System.out.println();
     }
 
     public static void loadCredits(Card card){
-        System.out.print("Enter money to fill in card " + card.getName(card) + " -> " + card.getId(card) + " : ");
-        Scanner scanner = new Scanner( System.in );
-        double amount = Float.parseFloat(scanner.nextLine());
-        card.setCredits(card, card.getCredits(card) + amount*3.14);
-        System.out.printf(card.getName(card) + " Credits: %.2f\n", card.getCredits(card));
+        System.out.print("Enter money (whole number) to fill in card " + card.getName() + " -> " + card.getId() + " : ");
+        Scanner scanner = new Scanner(System.in);
+        int amount = scanner.nextInt();
+        if (amount < 0) {
+            throw new IllegalArgumentException("Money cannot be negative");
+        }
+        card.setCredits(card.getCredits() + amount * 2.0);
+        System.out.printf(card.getName() + " Credits: %f\n", card.getCredits());
     }
 
     public static void moveCredits(Card fromcard, Card tocard){
-        tocard.setCredits(tocard, fromcard.getCredits(fromcard) + tocard.getCredits(tocard));
-        System.out.printf("Card Credits: %.2f\n", tocard.getCredits(tocard));
-        fromcard.setCredits(fromcard, 0);
+        tocard.setCredits(fromcard.getCredits() + tocard.getCredits());
+        System.out.printf("Card Credits: %.2f\n", tocard.getCredits());
+        fromcard.setCredits(0);
     }
 
     public static void moveTickets(Card fromcard, Card tocard){
-        tocard.setTickets(tocard, fromcard.getTickets(fromcard) + tocard.getTickets(tocard));
-        System.out.printf("Card Tickets: %d\n", tocard.getTickets(tocard));
-        fromcard.setTickets(fromcard, 0);
+        tocard.setTickets(fromcard.getTickets() + tocard.getTickets());
+        System.out.printf("Card Tickets: %d\n", tocard.getTickets());
+        fromcard.setTickets(0);
     }
 }
 
