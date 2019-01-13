@@ -5,6 +5,7 @@ class Scratch {
     public static void main(String[] args) {
         Card card1 = new Card("Card 1");
         Card card2 = new Card("Card 2");
+        Terminal.initialFillPrizes();
         int choice = 1;
 
         while (choice >= 1) {
@@ -53,6 +54,17 @@ class Scratch {
                     }
                     else if (selection == 2){
                         Game.playGame(card2);
+                    }
+                    break;
+                case 6: // Buy prize
+                    Scanner inp = new Scanner(System.in);
+                    System.out.println("Which card do you want to use for playing?: ");
+                    int select = inp.nextInt();
+                    if (select == 1){
+                        Terminal.exchangeTickets(card1);
+                    }
+                    else if (select == 2){
+                        Terminal.exchangeTickets(card2);
                     }
                     break;
                 default:
@@ -187,13 +199,26 @@ class Prize {
         }
         this.quantity = quantity;
     }
+    
+    @Override
+    public String toString() {
+        return "Name: " + this.name + 
+            " Tickets required: " + this.price + 
+            " Quantity: " + this.quantity;
+    }
 }
 
 class Terminal {
-    private List<Prize> prizes; // TODO: use it
+    private static List<Prize> prizes = new ArrayList<>(); 
     
-    public Terminal() {
-        this.prizes = new ArrayList<>();
+    public static void initialFillPrizes() {
+        prizes.clear();
+        Prize p1 = new Prize("candy", 1, 5);
+        Prize p2 = new Prize("wallet", 1, 5);
+        Prize p3 = new Prize("flashlight", 1, 5);
+        prizes.add(p1);
+        prizes.add(p2);
+        prizes.add(p3);
     }
     
     public static void getCardInfo(Card card) {
@@ -225,6 +250,41 @@ class Terminal {
         tocard.setTickets(fromcard.getTickets() + tocard.getTickets());
         System.out.printf("Card Tickets: %d\n", tocard.getTickets());
         fromcard.setTickets(0);
+    }
+    
+    public static void exchangeTickets(Card card) {
+        int len = prizes.size();
+        System.out.println("Prizes remaining: ");
+        for (int i = 0; i < len; i++) {
+            Prize p = prizes.get(i);
+            System.out.println(p.toString());
+        }
+        System.out.println("Enter name to buy: ");
+        Scanner input = new Scanner(System.in);
+        String name = input.nextLine();
+        
+        boolean isFound = false;
+        for (int i = 0; i < len; i++) {
+            Prize p = prizes.get(i);
+            if (p.getName().equals(name)) {
+                int currentTickets = card.getTickets();
+                if (currentTickets >= p.getPrice() && p.getQuantity() > 0) {
+                    card.setTickets(currentTickets - p.getPrice());
+                    p.setQuantity(p.getQuantity() - 1);
+                }
+                else {
+                    System.out.println("insufficient amount of tickets");
+                }
+                
+                isFound = true;
+                break;
+            }
+        }
+        
+        if (!isFound) {
+            System.out.println("Selected prize is not found");
+        }
+        
     }
 }
 
